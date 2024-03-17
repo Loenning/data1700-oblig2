@@ -89,6 +89,6 @@ function buyTicket() {
 
 //------ Function that empties the array when the button is pressed
 function deleteAll() {
-    tickets.length = 0;
+    ticketsArray.length = 0;
     document.getElementById("list").innerHTML = "";
 }
