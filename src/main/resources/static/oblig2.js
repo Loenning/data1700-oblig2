@@ -1,6 +1,3 @@
-//------Creating an empty array for ticket orders
-const ticketsArray = []
-
 //------function for buying tickets
 function buyTicket() {
     const film = document.getElementById("film");
@@ -45,19 +42,20 @@ function buyTicket() {
     validateInput(telefonnr.value, /^\d{8}$/, wrongNumber, "Skriv inn telefonnr", "Skriv inn gyldig telefonnr (8 tall)")
     validateInput(epost.value, /^[a-zæøåA-ZÆØÅ0-9._%+-]+@[a-zæøåA-ZÆØÅ0-9.-]+\.[a-zæøåA-ZÆØÅ]+$/, wrongEmail, "Skriv inn epost", "Skriv inn gyldig epost")
 
-//------ If the input validation function doesn't change the value of the wrongInput variable, an order is created
+//------ If the input validation function doesn't change the value of the wrongInput variable, a ticket object within the ticket class is
+    //created
     if (wrongInput === false) {
-        const order = {
-            film: film.value,
-            antall: antall.value,
-            fornavn: fornavn.value,
-            etternavn: etternavn.value,
-            telefonnr: telefonnr.value,
-            epost: epost.value
+        ticket = {
+            "film": document.getElementById("film").value,
+            "antall": document.getElementById("antall").value,
+            "fornavn": document.getElementById("fornavn").value,
+            "etternavn": document.getElementById("etternavn").value,
+            "telefonnr": document.getElementById("telefonnr").value,
+            "epost": document.getElementById("epost").value
         };
+        console.log(ticket); //good for debugging in case the elements from student are no
+        $.post("/tickets/add", ticket, function (data) {})
 
-//------ Puts the created order into the tickets array
-        ticketsArray.push(order);
 
 //------ Resetting the variable values once the order is pushed
         film.value = "";
@@ -88,7 +86,23 @@ function buyTicket() {
 }
 
 //------ Function that empties the array when the button is pressed
-function deleteAll() {
-    ticketsArray.length = 0;
-    document.getElementById("list").innerHTML = "";
-}
+    function deleteAll() {
+        ticketsArray.length = 0;
+        document.getElementById("list").innerHTML = "";
+    }
+
+    function sendTicketFromInput() {
+        ticket = {
+            "film": document.getElementById("film").value,
+            "antall": document.getElementById("antall").value,
+            "fornavn": document.getElementById("fornavn").value,
+            "etternavn": document.getElementById("etternavn").value,
+            "telefonnr": document.getElementById("telefonnr").value,
+            "epost": document.getElementById("epost").value
+
+
+        }
+        console.log(ticket); //good for debugging in case the elements from student are no
+        $.post("/receiveTicket", ticket, function (data) {
+        })
+    }
