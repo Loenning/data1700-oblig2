@@ -1,3 +1,5 @@
+const fieldIds = ['movie', 'count', 'firstname', 'lastname', 'tel', 'email'];
+
 //------function for buying tickets
 function buyTicket() {
     const film = document.getElementById("film");
@@ -53,9 +55,10 @@ function buyTicket() {
             "telefonnr": document.getElementById("telefonnr").value,
             "epost": document.getElementById("epost").value
         };
-        console.log(ticket); //good for debugging in case the elements from student are no
-        $.post("/tickets/add", ticket, function (data) {})
-
+        //console.log(ticket); //good for debugging in case the elements from student are no
+        $.post("/tickets/add", ticket, function (){
+            listTickets()
+        })
 
 //------ Resetting the variable values once the order is pushed
         film.value = "";
@@ -65,44 +68,49 @@ function buyTicket() {
         telefonnr.value = "";
         epost.value = "";
     }
+}
+
 
 //------ Function for printing out the tickets array
-    function showOrder() {
+function listTickets(data) {
+        // need to read the array of objects that we received
+        // [stud1,stud2,stud3]
+        //console.log(data)
+    $.get("/tickets/list", function (data){
+        let dinamicHtml= `<table>
+                    <thead>
+                        <tr>
+                            <td>Film</td>
+                            <td>Antall</td>
+                            <td>Fornavn</td>
+                            <td>Etternavn</td>
+                            <td>Telefonnummer</td>
+                            <td>Epost</td>
+                        </tr>
+                    </thead>
+                    `;
+        data?.forEach(function(ticket){
+            // dynamically create html around the list of object
+            dinamicHtml +=`<tbody>
+                                <tr>
+                                    <td> ${ticket.film} </td>
+                                    <td> ${ticket.antall} </td>
+                                    <td> ${ticket.fornavn} </td>
+                                    <td> ${ticket.etternavn} </td>
+                                    <td> ${ticket.telefonnr} </td>
+                                    <td> ${ticket.epost} </td>
+                                </tr>
+                           </tbody>`
+        })
+        dinamicHtml+="</table>"
+        document.getElementById("/tickets/list").innerHTML = dinamicHtml;
+    })
 
-        let ut = "<table id='table'><tr>" +
-            "<th>Film</th><th>Antall</th><th>Navn</th><th>Etternavn</th><th>Telefonnr</th><th>Epost</th>" +
-            "</tr>";
-        for (let i of ticketsArray) {
-            ut += "<tr>";
-            ut += "<td>" + i.film + "</td><td>" + i.antall + "</td><td>"
-                + i.fornavn + "</td><td>" + i.etternavn + "</td><td>"
-                + i.telefonnr + "</td><td>" + i.epost + "</td>";
-            ut += "</tr>";
-        }
-        document.getElementById("list").innerHTML = ut;
-    }
-
-    showOrder();
 }
 
 //------ Function that empties the array when the button is pressed
-    function deleteAll() {
-        ticketsArray.length = 0;
-        document.getElementById("list").innerHTML = "";
-    }
-
-    function sendTicketFromInput() {
-        ticket = {
-            "film": document.getElementById("film").value,
-            "antall": document.getElementById("antall").value,
-            "fornavn": document.getElementById("fornavn").value,
-            "etternavn": document.getElementById("etternavn").value,
-            "telefonnr": document.getElementById("telefonnr").value,
-            "epost": document.getElementById("epost").value
-
-
-        }
-        console.log(ticket); //good for debugging in case the elements from student are no
-        $.post("/receiveTicket", ticket, function (data) {
-        })
-    }
+function deleteAll() {
+    $.post("tickets/clear", function (response){
+        listTickets(response)
+    })
+}

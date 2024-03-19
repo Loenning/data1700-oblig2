@@ -10,8 +10,11 @@ public class AppController {
     private final ArrayList<Ticket> tickets = new ArrayList<>();
 
     @PostMapping("/tickets/add")
-    public void addTicketToList(Ticket ticket) {
+    public ArrayList<Ticket> addTicketToList(Ticket ticket) {
         tickets.add(ticket);
+        System.out.println(ticket);
+        System.out.println(tickets);
+        return tickets;
     }
 
     @GetMapping("/tickets/list")
